@@ -58,7 +58,7 @@ namespace LineSegmentWPF
                 return;
             }
 
-            _mySegment = _mySegment + addValue;//todo
+            _mySegment = _mySegment + addValue;
             UpdateUiState();
             TxtAfterAdd.Text = $"После + {addValue}: {_mySegment}";
         }
