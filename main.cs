@@ -1,0 +1,122 @@
+using System;
+using System.Windows;
+
+namespace LineSegmentWPF
+{
+    public partial class MainWindow : Window
+    {
+        private LineSegment? _mySegment;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void BtnCreate_Click(object sender, RoutedEventArgs e)
+        {
+            if (!double.TryParse(TxtX.Text, out double x))
+            {
+                MessageBox.Show("Ошибка! Введите число для начала отрезка (X).", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!double.TryParse(TxtY.Text, out double y))
+            {
+                MessageBox.Show("Ошибка! Введите число для конца отрезка (Y).", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            _mySegment = new LineSegment(x, y);
+
+            ClearOperationResults();
+            UpdateUiState();
+
+            TxtSegmentInfo.Text = $"Успешно создан! {_mySegment}";
+        }
+
+        private void BtnLength_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+            TxtLength.Text = $"Длина отрезка: {!_mySegment}";
+        }
+
+        private void BtnIncrement_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+            _mySegment++;
+            UpdateUiState();
+            TxtAfterIncrement.Text = $"После ++: {_mySegment}";
+        }
+
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+
+            if (!int.TryParse(TxtAddValue.Text, out int addValue))
+            {
+                MessageBox.Show("Ошибка! Введите корректное целое число для сдвига.", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            _mySegment = _mySegment + addValue;//todo
+            UpdateUiState();
+            TxtAfterAdd.Text = $"После + {addValue}: {_mySegment}";
+        }
+
+        private void BtnCheck_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+
+            if (!double.TryParse(TxtCheckNum.Text, out double result) || result < -100 || result > 100)
+            {
+                MessageBox.Show("Ошибка! Введите число в диапазоне от -100 до 100.", "Ошибка диапазона", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int checkNum = (int)result;//явное
+
+            if (_mySegment < checkNum)
+            {
+                TxtCheckResult.Text = $"Число {checkNum} входит в отрезок.";
+            }
+            else
+            {
+                TxtCheckResult.Text = $"Число {checkNum} НЕ входит в отрезок.";
+            }
+        }
+
+        private void BtnCastInt_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+            int castedX = (int)_mySegment;//явное
+            TxtCastInt.Text = $"Результат (int): {castedX}";
+        }
+
+        private void BtnCastDouble_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+            double castedY = _mySegment;// неявное приведение
+            TxtCastDouble.Text = $"Результат (double): {castedY}";
+        }
+
+        private void UpdateUiState()
+        {
+            if (_mySegment != null)
+            {
+                TxtCurrentState.Text = _mySegment.ToString();
+                TxtCurrentState.Foreground = System.Windows.Media.Brushes.Black;
+                GrpOperations.IsEnabled = true;
+            }
+        }
+
+        private void ClearOperationResults()
+        {
+            TxtLength.Text = string.Empty;
+            TxtAfterIncrement.Text = string.Empty;
+            TxtAfterAdd.Text = string.Empty;
+            TxtCheckResult.Text = string.Empty;
+            TxtCastInt.Text = string.Empty;
+            TxtCastDouble.Text = string.Empty;
+        }
+    }
+}
