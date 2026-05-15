@@ -63,7 +63,7 @@ namespace LineSegmentWPF
 
         public override string ToString()
         {
-            return $"Отрезок: [{_x}; {_y}]";
+            return $"Отрезок: [{_x:F2}; {_y:F2}]";
         }
     }
 }
