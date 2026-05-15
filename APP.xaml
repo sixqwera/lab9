@@ -1,0 +1,107 @@
+<Window x:Class="LineSegmentWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LineSegmentWPF"
+        mc:Ignorable="d"
+        Title="Лабораторная работа — Отрезок"
+        Height="620" Width="480"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="5,3"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="5,2"/>
+        </Style>
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="8,6"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+
+            <!-- Создание отрезка -->
+            <GroupBox Header="1. Создание отрезка">
+                <StackPanel>
+                    <TextBlock Text="Введите начало отрезка (X):"/>
+                    <TextBox x:Name="TxtX"/>
+                    <TextBlock Text="Введите конец отрезка (Y):"/>
+                    <TextBox x:Name="TxtY"/>
+                    <Button Content="Создать отрезок" Click="BtnCreate_Click"/>
+                    <TextBlock x:Name="TxtSegmentInfo" Foreground="DarkGreen"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Операции -->
+            <GroupBox Header="2. Операции с отрезком" IsEnabled="False" x:Name="GrpOperations">
+                <StackPanel>
+
+                    <!-- Длина (!) -->
+                    <TextBlock Text="Оператор ! — длина отрезка:"/>
+                    <Button Content="Вычислить длину (!)" Click="BtnLength_Click"/>
+                    <TextBlock x:Name="TxtLength"/>
+
+                    <Separator Margin="0,6"/>
+
+                    <!-- Инкремент ++ -->
+                    <TextBlock Text="Оператор ++ — сдвинуть отрезок на 1:"/>
+                    <Button Content="Применить ++" Click="BtnIncrement_Click"/>
+                    <TextBlock x:Name="TxtAfterIncrement"/>
+
+                    <Separator Margin="0,6"/>
+
+                    <!-- Сложение + int -->
+                    <TextBlock Text="Оператор + int — сдвинуть отрезок на число:"/>
+                    <TextBox x:Name="TxtAddValue" ToolTip="Целое число"/>
+                    <Button Content="Применить +" Click="BtnAdd_Click"/>
+                    <TextBlock x:Name="TxtAfterAdd"/>
+
+                    <Separator Margin="0,6"/>
+
+                    <!-- Проверка < (входит ли число в отрезок) -->
+                    <TextBlock Text="Оператор &lt; — входит ли число в отрезок:"/>
+                    <TextBlock Text="(от -100 до 100)" FontSize="11" Foreground="Gray" Margin="5,0"/>
+                    <TextBox x:Name="TxtCheckNum" ToolTip="Целое число от -100 до 100"/>
+                    <Button Content="Проверить (&lt;)" Click="BtnCheck_Click"/>
+                    <TextBlock x:Name="TxtCheckResult"/>
+
+                    <Separator Margin="0,6"/>
+
+                    <!-- Явное приведение к int -->
+                    <TextBlock Text="Явное приведение (int) — целая часть X:"/>
+                    <Button Content="Привести к int" Click="BtnCastInt_Click"/>
+                    <TextBlock x:Name="TxtCastInt"/>
+
+                    <Separator Margin="0,6"/>
+
+                    <!-- Неявное приведение к double -->
+                    <TextBlock Text="Неявное приведение к double — значение Y:"/>
+                    <Button Content="Привести к double" Click="BtnCastDouble_Click"/>
+                    <TextBlock x:Name="TxtCastDouble"/>
+
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Текущее состояние -->
+            <GroupBox Header="Текущее состояние отрезка">
+                <TextBlock x:Name="TxtCurrentState" Text="Отрезок ещё не создан." Foreground="Gray"/>
+            </GroupBox>
+
+        </StackPanel>
+    </ScrollViewer>
+</Window>
