@@ -1,3 +1,5 @@
+using System;
+
 namespace LineSegmentWPF
 {
     internal class LineSegment
@@ -7,14 +9,14 @@ namespace LineSegmentWPF
 
         public LineSegment(double x, double y)
         {
-            this._x = x;
-            this._y = y;
+            _x = x;
+            _y = y;
         }
 
         public LineSegment(LineSegment other)
         {
-            this._x = other._x;
-            this._y = other._y;
+            _x = other._x;
+            _y = other._y;
         }
 
         public static double operator !(LineSegment s)
@@ -37,24 +39,24 @@ namespace LineSegmentWPF
             return s._y;
         }
 
-        public static LineSegment operator +(LineSegment s, int d)
+        public static LineSegment operator +(LineSegment s,int d)
         {
             return new LineSegment(s._x - d, s._y + d);
         }
 
-        public static LineSegment operator +(int d, LineSegment s)
+        public static LineSegment operator +(int d,LineSegment s)
         {
             return s + d;
         }
 
-        public static bool operator <(LineSegment s, int number)
+        public static bool operator <(LineSegment s,int number)
         {
             double start = Math.Min(s._x, s._y);
             double end = Math.Max(s._x, s._y);
             return number >= start && number <= end;
         }
 
-        public static bool operator >(LineSegment s, int number)
+        public static bool operator >(LineSegment s,int number)
         {
             double start = Math.Min(s._x, s._y);
             double end = Math.Max(s._x, s._y);
