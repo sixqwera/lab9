@@ -1,107 +1,122 @@
-<Window x:Class="LineSegmentWPF.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LineSegmentWPF"
-        mc:Ignorable="d"
-        Title="Лабораторная работа — Отрезок"
-        Height="620" Width="480"
-        ResizeMode="CanMinimize"
-        WindowStartupLocation="CenterScreen">
+using System;
+using System.Windows;
 
-    <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Padding" Value="10,5"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="FontSize" Value="13"/>
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Padding" Value="4"/>
-            <Setter Property="Margin" Value="5,3"/>
-            <Setter Property="FontSize" Value="13"/>
-        </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Margin" Value="5,2"/>
-        </Style>
-        <Style TargetType="GroupBox">
-            <Setter Property="Margin" Value="8,6"/>
-            <Setter Property="Padding" Value="8"/>
-            <Setter Property="FontSize" Value="13"/>
-        </Style>
-    </Window.Resources>
+namespace LineSegmentWPF
+{
+    public partial class MainWindow : Window
+    {
+        private LineSegment? _mySegment;
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="10">
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
 
-            <!-- Создание отрезка -->
-            <GroupBox Header="1. Создание отрезка">
-                <StackPanel>
-                    <TextBlock Text="Введите начало отрезка (X):"/>
-                    <TextBox x:Name="TxtX"/>
-                    <TextBlock Text="Введите конец отрезка (Y):"/>
-                    <TextBox x:Name="TxtY"/>
-                    <Button Content="Создать отрезок" Click="BtnCreate_Click"/>
-                    <TextBlock x:Name="TxtSegmentInfo" Foreground="DarkGreen"/>
-                </StackPanel>
-            </GroupBox>
+        private void BtnCreate_Click(object sender, RoutedEventArgs e)
+        {
+            if (!double.TryParse(TxtX.Text, out double x))
+            {
+                MessageBox.Show("Ошибка! Введите число для начала отрезка (X).", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-            <!-- Операции -->
-            <GroupBox Header="2. Операции с отрезком" IsEnabled="False" x:Name="GrpOperations">
-                <StackPanel>
+            if (!double.TryParse(TxtY.Text, out double y))
+            {
+                MessageBox.Show("Ошибка! Введите число для конца отрезка (Y).", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-                    <!-- Длина (!) -->
-                    <TextBlock Text="Оператор ! — длина отрезка:"/>
-                    <Button Content="Вычислить длину (!)" Click="BtnLength_Click"/>
-                    <TextBlock x:Name="TxtLength"/>
+            _mySegment = new LineSegment(x, y);
 
-                    <Separator Margin="0,6"/>
+            ClearOperationResults();
+            UpdateUiState();
 
-                    <!-- Инкремент ++ -->
-                    <TextBlock Text="Оператор ++ — сдвинуть отрезок на 1:"/>
-                    <Button Content="Применить ++" Click="BtnIncrement_Click"/>
-                    <TextBlock x:Name="TxtAfterIncrement"/>
+            TxtSegmentInfo.Text = $"Успешно создан! {_mySegment}";
+        }
 
-                    <Separator Margin="0,6"/>
+        private void BtnLength_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+            TxtLength.Text = $"Длина отрезка: {!_mySegment}";
+        }
 
-                    <!-- Сложение + int -->
-                    <TextBlock Text="Оператор + int — сдвинуть отрезок на число:"/>
-                    <TextBox x:Name="TxtAddValue" ToolTip="Целое число"/>
-                    <Button Content="Применить +" Click="BtnAdd_Click"/>
-                    <TextBlock x:Name="TxtAfterAdd"/>
+        private void BtnIncrement_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+            _mySegment++;
+            UpdateUiState();
+            TxtAfterIncrement.Text = $"После ++: {_mySegment}";
+        }
 
-                    <Separator Margin="0,6"/>
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
 
-                    <!-- Проверка < (входит ли число в отрезок) -->
-                    <TextBlock Text="Оператор &lt; — входит ли число в отрезок:"/>
-                    <TextBlock Text="(от -100 до 100)" FontSize="11" Foreground="Gray" Margin="5,0"/>
-                    <TextBox x:Name="TxtCheckNum" ToolTip="Целое число от -100 до 100"/>
-                    <Button Content="Проверить (&lt;)" Click="BtnCheck_Click"/>
-                    <TextBlock x:Name="TxtCheckResult"/>
+            if (!int.TryParse(TxtAddValue.Text, out int addValue))
+            {
+                MessageBox.Show("Ошибка! Введите корректное целое число для сдвига.", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-                    <Separator Margin="0,6"/>
+            _mySegment = _mySegment + addValue;
+            UpdateUiState();
+            TxtAfterAdd.Text = $"После + {addValue}: {_mySegment}";
+        }
 
-                    <!-- Явное приведение к int -->
-                    <TextBlock Text="Явное приведение (int) — целая часть X:"/>
-                    <Button Content="Привести к int" Click="BtnCastInt_Click"/>
-                    <TextBlock x:Name="TxtCastInt"/>
+        private void BtnCheck_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
 
-                    <Separator Margin="0,6"/>
+            if (!double.TryParse(TxtCheckNum.Text, out double result) || result < -100 || result > 100)
+            {
+                MessageBox.Show("Ошибка! Введите число в диапазоне от -100 до 100.", "Ошибка диапазона", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-                    <!-- Неявное приведение к double -->
-                    <TextBlock Text="Неявное приведение к double — значение Y:"/>
-                    <Button Content="Привести к double" Click="BtnCastDouble_Click"/>
-                    <TextBlock x:Name="TxtCastDouble"/>
+            int checkNum = (int)result;//явное
 
-                </StackPanel>
-            </GroupBox>
+            if (_mySegment < checkNum)
+            {
+                TxtCheckResult.Text = $"Число {checkNum} входит в отрезок.";
+            }
+            else
+            {
+                TxtCheckResult.Text = $"Число {checkNum} НЕ входит в отрезок.";
+            }
+        }
 
-            <!-- Текущее состояние -->
-            <GroupBox Header="Текущее состояние отрезка">
-                <TextBlock x:Name="TxtCurrentState" Text="Отрезок ещё не создан." Foreground="Gray"/>
-            </GroupBox>
+        private void BtnCastInt_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+            int castedX = (int)_mySegment;//явное
+            TxtCastInt.Text = $"Результат (int): {castedX}";
+        }
 
-        </StackPanel>
-    </ScrollViewer>
-</Window>
+        private void BtnCastDouble_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mySegment == null) return;
+            double castedY = _mySegment;// неявное приведение
+            TxtCastDouble.Text = $"Результат (double): {castedY}";
+        }
+
+        private void UpdateUiState()
+        {
+            if (_mySegment != null)
+            {
+                TxtCurrentState.Text = _mySegment.ToString();
+                TxtCurrentState.Foreground = System.Windows.Media.Brushes.Black;
+                GrpOperations.IsEnabled = true;
+            }
+        }
+
+        private void ClearOperationResults()
+        {
+            TxtLength.Text = string.Empty;
+            TxtAfterIncrement.Text = string.Empty;
+            TxtAfterAdd.Text = string.Empty;
+            TxtCheckResult.Text = string.Empty;
+            TxtCastInt.Text = string.Empty;
+            TxtCastDouble.Text = string.Empty;
+        }
+    }
+}
